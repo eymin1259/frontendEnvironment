@@ -13,27 +13,22 @@ module.exports = {
   },
   output: {
     filename: "[name].js",
-    path: path.resolve("./dist")
+    path: path.resolve("./dist"),
+    assetModuleFilename: 'images/[hash][ext][query]'
   },
   module: {
     rules: [
       {
         test: /\.(scss|css)$/,
         use: [
-          process.env.NODE_ENV === "production"
-            ? MiniCssExtractPlugin.loader
-            : "style-loader",
+          MiniCssExtractPlugin.loader,
           "css-loader",
           "sass-loader"
         ]
       },
       {
-        test: /\.(png|jpg|svg|gif)$/,
-        loader: "url-loader",
-        options: {
-          name: "[name].[ext]?[hash]",
-          limit: 10000
-        }
+        test: /\.(png|jpg|gif|svg)$/i,
+        type: 'asset/resource'
       },
       {
         test: /\.js$/,
@@ -61,8 +56,6 @@ module.exports = {
       hash: process.env.NODE_ENV === "production"
     }),
     new CleanWebpackPlugin(),
-    ...(process.env.NODE_ENV === "production"
-      ? [new MiniCssExtractPlugin({ filename: `[name].css` })]
-      : [])
+    new MiniCssExtractPlugin({ filename: `[name].css` })
   ]
 };
